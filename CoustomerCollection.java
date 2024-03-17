@@ -40,7 +40,7 @@ public class CoustomerCollection{
 
     }
 
-    private int getArrLocation(int phoneNo)
+    public int getArrLocation(int phoneNo)
     {
         int ArrLocation = 0 ;
         boolean notFound = true ;

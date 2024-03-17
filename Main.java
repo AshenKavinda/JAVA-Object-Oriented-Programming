@@ -53,187 +53,176 @@ public class Main {
     }
 
     public static void mainMenu(ItemCollection itemcollection,SupplierCollection suppliercollection,Bill bill,CoustomerCollection coustomer,Scanner scanner)
-    {
-        cls();
-        int choice ;
-
-        System.out.println("1. store Management");
-        System.out.println("2. Billing");
-        System.out.println("3. Customer Management");
-        System.out.println();
-        System.out.print("Choice : ");
-        choice = scanner.nextInt();
-        switch (choice) {
-            case 1:
-                storeManagement(itemcollection, suppliercollection, bill, coustomer, scanner);
-                break;
-            case 2:
-                cls();
-                System.out.print("Phone Number : ");
-                int pNo = scanner.nextInt();
-                scanner.nextLine();
-                bill.getUserInputAddToBill(scanner);
-                System.out.print("press 1 to conform payment : ");
-                choice = scanner.nextInt();
-                if (choice==1) {
-                    System.out.print("Enter balance : ");
-                    float balance = scanner.nextFloat();
-                    float point = bill.printFinalBill(balance);
-                    System.out.println();
-                    System.out.println("Point For That bill : "+point);
-                    coustomer.setPointByNumber(pNo, point);
-                    point = coustomer.getPointByNumber(pNo);
-                    bill.displayPoint(point);
-                    
-                    System.out.println("THANK YOU ....");
-                }
-                else {
-                    System.out.println("THANK YOU ....");
-                }
-                bill.resetBill();
-                System.out.print("To exit press 99 : ");
-                choice = scanner.nextInt();
-                mainMenu(itemcollection, suppliercollection, bill, coustomer, scanner);
-                break;
-            case 3:
-                customerManagement(itemcollection, suppliercollection, bill, coustomer, scanner);
-                break;
-                
-        
-            default:
-                mainMenu(itemcollection, suppliercollection, bill, coustomer, scanner);
-                break;
+    {  
+        int choice = 0 ;
+        while (choice!=99) {
+            cls();
+            System.out.println("1. store Management");
+            System.out.println("2. Billing");
+            System.out.println("3. Customer Management");
+            System.out.println();
+            System.out.print("Choice : ");
+            choice = scanner.nextInt();
+            switch (choice) {
+                case 1:
+                    storeManagement(itemcollection, suppliercollection,scanner);
+                    break;
+                case 2:
+                    billManagement(bill, coustomer, scanner);
+                    break;
+                case 3:
+                    customerManagement(coustomer, scanner);
+                    break;
+            }
         }
     }
-    //For customer handling
-    public static void customerManagement(ItemCollection itemcollection,SupplierCollection suppliercollection,Bill bill,CoustomerCollection coustomer,Scanner scanner)
+
+    public static void billManagement(Bill bill,CoustomerCollection coustomer,Scanner scanner)
     {
-        cls();
-        System.out.println("1. Get user Details");
-        System.out.println("2. Get All Customer Details");
-        System.out.println("3. Add Customer");
-        System.out.print("Choice : ");
-        int choice = scanner.nextInt();
-        switch (choice) {
-            case 1:
-                System.out.print("Phone No : ");
-                int pNo = scanner.nextInt();
-                coustomer.getUserByNumber(pNo);
-                sleep(4000);
-                customerManagement(itemcollection, suppliercollection, bill, coustomer, scanner);
+        int choice = 0 ;
+        while (choice!=99) {
+            cls();
+            System.out.print("Phone Number : ");
+            int pNo = scanner.nextInt();
+            scanner.nextLine();
+            if (pNo==99) {
                 break;
-            case 2:
-                coustomer.getAllUser();
-                System.out.print("To exit enter 99 : ");
-                choice = scanner.nextInt();
-                customerManagement(itemcollection, suppliercollection, bill, coustomer, scanner);
-                break;
-            case 3:
-                coustomer.getUserInputAddCoustomer(scanner);
-                customerManagement(itemcollection, suppliercollection, bill, coustomer, scanner);
-                break;
-            case 99:
-                mainMenu(itemcollection, suppliercollection, bill, coustomer, scanner);
-                break;
-        
-            default:
-                customerManagement(itemcollection, suppliercollection, bill, coustomer, scanner);
-                break;
+            }else {
+                if (coustomer.getArrLocation(pNo)<0) {
+                    System.out.println("Invalied Phone NUmber (continue 1 or Re-enter 2)");
+                    if (scanner.nextInt()==2) {
+                        continue ;
+                    }
+                    scanner.nextLine();
+                }
+            }         
+            bill.getUserInputAddToBill(scanner);
+            System.out.print("press 1 to conform payment : ");
+            choice = scanner.nextInt();
+            if (choice==1) {
+                System.out.print("Enter balance : ");
+                float balance = scanner.nextFloat();
+                float point = bill.printFinalBill(balance);
+                System.out.println();
+                System.out.println("Point For That bill : "+point);
+                coustomer.setPointByNumber(pNo, point);
+                point = coustomer.getPointByNumber(pNo);
+                bill.displayPoint(point);
+                
+                System.out.println("THANK YOU ....");
+            }
+            else {
+                System.out.println("THANK YOU ....");
+            }
+            bill.resetBill();
+            System.out.print("NEXT ENTER eny key : ");
+            scanner.nextInt(); 
+        }
+    }
+
+    //For customer handling
+    public static void customerManagement(CoustomerCollection coustomer,Scanner scanner)
+    {  
+        int choice = 0 ;
+        while (choice!=99) {
+            cls();
+            System.out.println("1. Get user Details");
+            System.out.println("2. Get All Customer Details");
+            System.out.println("3. Add Customer");
+            System.out.print("Choice : ");
+            choice = scanner.nextInt();
+            switch (choice) {
+                case 1:
+                    System.out.print("Phone No : ");
+                    int pNo = scanner.nextInt();
+                    coustomer.getUserByNumber(pNo);
+                    sleep(4000);
+                    break;
+                case 2:
+                    coustomer.getAllUser();
+                    System.out.print("To exit enter 99 : ");
+                    choice = scanner.nextInt();
+                    break;
+                case 3:
+                    coustomer.getUserInputAddCoustomer(scanner);
+                    break;
+            }
         }
     }
 
     //Store manegement menu
-    public static void storeManagement(ItemCollection itemcollection,SupplierCollection suppliercollection,Bill bill,CoustomerCollection coustomer,Scanner scanner)
+    public static void storeManagement(ItemCollection itemcollection,SupplierCollection suppliercollection,Scanner scanner)
     {
-        cls();
-        System.out.println("1. Item");
-        System.out.println("2. Supplier");
-        System.out.print("Choice : ");
-        int choice = scanner.nextInt() ;
-        switch (choice) {
-            case 1:
-                item(itemcollection, suppliercollection, bill, coustomer, scanner);
-                storeManagement(itemcollection, suppliercollection, bill, coustomer, scanner);
-                break;
-            case 2 :
-                supplier(itemcollection, suppliercollection, bill, coustomer, scanner);
-                storeManagement(itemcollection, suppliercollection, bill, coustomer, scanner);
-                break;
-            case 99 : 
-                mainMenu(itemcollection, suppliercollection, bill, coustomer, scanner);
-                break;
-        
-            default:
-                storeManagement(itemcollection, suppliercollection, bill, coustomer, scanner);
-                break;
+        int choice = 0 ;
+        while (choice!=99) {
+            cls();
+            System.out.println("1. Item");
+            System.out.println("2. Supplier");
+            System.out.print("Choice : ");
+            choice = scanner.nextInt() ;
+            switch (choice) {
+                case 1:
+                    item(itemcollection, suppliercollection, scanner);
+                    break;
+                case 2:
+                    supplier(suppliercollection, scanner);
+                    break;
+            }
         }
     }
 
     //For supplier handling
-    public static void supplier(ItemCollection itemcollection,SupplierCollection suppliercollection,Bill bill,CoustomerCollection coustomer,Scanner scanner)
+    public static void supplier(SupplierCollection suppliercollection,Scanner scanner)
     {
-        cls();
-        System.out.println("1. Add Supplier : ");
-        System.out.println("2. Add More Item to Suppliern : ");
-        System.out.println("3. Search Supliers by Item");
-        System.out.print("Choice : ");
-        int choice = scanner.nextInt();
-        switch (choice) {
-            case 1:
-                suppliercollection.getUserInputAddSuplier(scanner);
-                supplier(itemcollection, suppliercollection, bill, coustomer, scanner);
-                break;
-            case 2:
-                suppliercollection.getUserInputaddMoreItemToSuplier(scanner);
-                supplier(itemcollection, suppliercollection, bill, coustomer, scanner);
-                break;
-            case 3:
-                String itemGroupCode ;
-                System.out.println("ItemCollection Code : ");
-                itemGroupCode=scanner.next();
-                suppliercollection.printSuplierListByItemGroupId(itemGroupCode);
-                sleep(4000);
-                supplier(itemcollection, suppliercollection, bill, coustomer, scanner);
-                break;
-            case 99:
-                storeManagement(itemcollection, suppliercollection, bill, coustomer, scanner);
-                break;
-        
-            default:
-                supplier(itemcollection, suppliercollection, bill, coustomer, scanner);
-                break;
+        int choice = 0 ;
+        while (choice!=99) {
+            cls();
+            System.out.println("1. Add Supplier : ");
+            System.out.println("2. Add More Item to Suppliern : ");
+            System.out.println("3. Search Supliers by Item");
+            System.out.print("Choice : ");
+            choice = scanner.nextInt();
+            switch (choice) {
+                case 1:
+                    suppliercollection.getUserInputAddSuplier(scanner);
+                    break;
+                case 2:
+                    suppliercollection.getUserInputaddMoreItemToSuplier(scanner);
+                    break;
+                case 3:
+                    String itemGroupCode ;
+                    System.out.println("ItemCollection Code : ");
+                    itemGroupCode=scanner.next();
+                    suppliercollection.printSuplierListByItemGroupId(itemGroupCode);
+                    sleep(4000);
+                    break;
+            }
         }
     }
 
     //For itemcollection handling
-    public static void item(ItemCollection itemcollection,SupplierCollection suppliercollection,Bill bill,CoustomerCollection coustomer,Scanner scanner)
+    public static void item(ItemCollection itemcollection,SupplierCollection suppliercollection,Scanner scanner)
     {
-        cls();
-        System.out.println("1. Add Countable Item");
-        System.out.println("2. Add Uncountable Item");
-        System.out.println("3. Update Item Quntity");
-        System.out.print("Choice : ");
-        int choice = scanner.nextInt() ;
-        
-        switch (choice) {
-            case 1:
-                itemcollection.getUserInputAddItem(suppliercollection, 1, scanner);
-                item(itemcollection, suppliercollection, bill, coustomer, scanner);
-                break;
-            case 2:
-                itemcollection.getUserInputAddItem(suppliercollection, 2, scanner);
-                item(itemcollection, suppliercollection, bill, coustomer, scanner);
-                break;
-            case 3:
-                itemcollection.getUserInputUpdateQuntity(scanner);
-                item(itemcollection, suppliercollection, bill, coustomer, scanner);
-                break;
-            case 99:
-                storeManagement(itemcollection, suppliercollection, bill, coustomer, scanner);
-                break;
-            default:
-                item(itemcollection, suppliercollection, bill, coustomer, scanner);
-                break;
+        int choice = 0 ;
+        while (choice!=99) {
+            cls();
+            System.out.println("1. Add Countable Item");
+            System.out.println("2. Add Uncountable Item");
+            System.out.println("3. Update Item Quntity");
+            System.out.print("Choice : ");
+            choice = scanner.nextInt() ;
+            
+            switch (choice) {
+                case 1:
+                    itemcollection.getUserInputAddItem(suppliercollection, 1, scanner);
+                    break;
+                case 2:
+                    itemcollection.getUserInputAddItem(suppliercollection, 2, scanner);
+                    break;
+                case 3:
+                    itemcollection.getUserInputUpdateQuntity(scanner);
+                    break;
+            }
         }
     }
 
